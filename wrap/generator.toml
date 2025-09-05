@@ -1,0 +1,9 @@
+[general]
+library_name = "librccl"
+output_file_path = "../src/librccl.jl"
+module_name = "LibRCCL"
+export_symbol_prefixes = ["rccl"]
+
+[codegen]
+use_ccall_macro = true 
+always_NUL_terminated_string = true
