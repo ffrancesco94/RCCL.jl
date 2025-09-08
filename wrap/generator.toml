@@ -3,6 +3,8 @@ library_name = "librccl"
 output_file_path = "../src/librccl.jl"
 module_name = "LibRCCL"
 export_symbol_prefixes = ["rccl"]
+prologue_file_path = "./prologue.jl"
+epilogue_file_path = "./epilogue.jl"
 
 [codegen]
 use_ccall_macro = true 
