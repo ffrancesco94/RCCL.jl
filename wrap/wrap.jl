@@ -1,4 +1,8 @@
-using Clang.Generators, JuliaFormatter
+using Clang.Generators, JuliaFormatter, Clang
+
+cd(@__DIR__)
+pushfirst!(LOAD_PATH, joinpath(@__DIR__, "..", "src"))
+using RCCLLoader: RCCL_HANDLE
 
 
 # Headers to wrap
@@ -26,6 +30,7 @@ headers = joinpath(header_dir, "rccl", "rccl.h")
 #output_file = joinpath(@__DIR__, "..", "src", "librccl.jl")
 options = load_options(joinpath(@__DIR__, "generator.toml"))
 
+
 function rewriter!(ctx, options)
     for node in get_nodes(ctx.dag)
         if Generators.is_function(node) && !Generators.is_variadic_function(node)
@@ -36,9 +41,9 @@ function rewriter!(ctx, options)
             arg_exprs = call_expr.args[1].args[2:end]
             for expr in arg_exprs
                 if expr.args[1] == :stream
-                    expr.args[2] = :(HIPStream)
+                    expr.args[2] = :(HIPStream.stream)
                 end
-            end
+            end#
 
             rettyp = call_expr.args[2]
             if rettyp isa Symbol && String(rettyp) == "ncclResult_t"
@@ -48,7 +53,7 @@ function rewriter!(ctx, options)
     end
 end
 
-
+using AMDGPU
 ctx = create_context(headers, args, options)
 build!(ctx, BUILDSTAGE_NO_PRINTING)
 rewriter!(ctx, options)

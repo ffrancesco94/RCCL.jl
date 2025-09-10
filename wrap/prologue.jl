@@ -1,7 +1,7 @@
 const NULL = C_NULL
 const INT_MIN = typemin(Cint)
 
-import AMDGPU: HIPStream, @check
+#import AMDGPU: HIPStream, @check
 
 function check(f)
     res = f()::ncclResult_t
