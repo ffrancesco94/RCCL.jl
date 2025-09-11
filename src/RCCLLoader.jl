@@ -1,9 +1,8 @@
 module RCCLLoader
 
 using Libdl
-export is_available, LIBRCCL_PATH, RCCL_HANDLE
+export is_available, LIBRCCL_PATH, librccl
 
-const _cached_lib_path = Ref{Union{Nothing,String}}(nothing)
 # Ok, let's find out where ROCm is 
 const DEFAULT_ROCM_PATH = Ref{String}("/opt/rocm")
 
@@ -82,6 +81,12 @@ function version()
     VersionNumber(major, minor, patch)
 end
 
-const RCCL_HANDLE = dlopen(librccl_path())
+function __init__()
+    if is_available()
+        global const librccl = librccl_path()
+    else
+        @error "Cannot find librccl.so"
+    end
+end
 
 end
