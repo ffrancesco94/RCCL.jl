@@ -12,7 +12,7 @@ function Send(sendbuf, comm::Communicator; dest::Integer,
     stream::HIPStream=default_device_stream(comm))
     count = length(sendbud)
     datatype = ncclDataType_t(eltype(sendbuf))
-    ncclSend(sendbuf, count, datatype, dest, comm, stream)
+    ncclSend(sendbuf, count, datatype, dest, comm, stream.stream)
     return nothing
 end
 
@@ -29,7 +29,7 @@ function Recv!(recvbuf, comm::Communicator; source::Integer,
     stream::HIPStream=default_device_stream(comm))
     count = length(recvbuf)
     datatype = ncclDataType_t(eltype(recvbuf))
-    ncclRecv(recvbuf, count, datatype, source, comm, stream)
+    ncclRecv(recvbuf, count, datatype, source, comm, stream.stream)
     return recvbuf.data
 end
 

@@ -1,6 +1,6 @@
 export Communicator
 
-const UniqueID = LibRCCL.ncclUniqueID
+const UniqueID = LibRCCL.ncclUniqueId
 
 function UniqueID()
     r = Ref{UniqueID}()
@@ -19,7 +19,7 @@ function destroy(comm::Communicator)
     end
     return nothing
 end
-Base.unsafe_convert(::Type{LibNCCL.ncclComm_t}, comm::Communicator) = comm.handle
+Base.unsafe_convert(::Type{LibRCCL.ncclComm_t}, comm::Communicator) = comm.handle
 
 """
     RCCL.communicator(nranks, rank; [unique_id])
@@ -56,7 +56,7 @@ on a single host.
 comms = RCCL.Communicators(CUDA.devices())
 ```
 """
-function Communicators(deviceids::Vector{CInt})
+function Communicators(deviceids::Vector{Cint})
     ndev = length(deviceids)
     comms = Vector{ncclComm_t}(undef, ndev)
     ncclCommInitAll(comms, ndev, deviceids)

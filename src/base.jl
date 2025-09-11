@@ -12,7 +12,6 @@ ncclRedOp_t(x::ncclRedOp_t) = x
 
 Perform an average (over the ranks) operation.
 """
-
 const avg = ncclAvg
 
 ncclDataType_t(::Type{Int8}) = ncclInt8

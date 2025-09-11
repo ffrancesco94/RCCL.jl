@@ -4,7 +4,7 @@
 
 Start a RCCL group call.
 """
-groupStart = ncclGroupStart()
+groupStart() = ncclGroupStart()
 
 """
     RCCL.groupEnd()

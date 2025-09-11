@@ -13,7 +13,7 @@ function Allreduce!(sendbuf, recvbuf, op, comm::Communicator;
     @assert length(sendbuf) == count
     data_type = ncclDataType_t(eltype(recvbuf))
     _op = ncclRedOp_t(op)
-    ncclAllReduce(sendbuf, recvbuf, count, data_type, _op, comm, stream)
+    ncclAllReduce(sendbuf, recvbuf, count, data_type, _op, comm, stream.stream)
     return recvbuf
 end
 
@@ -28,7 +28,7 @@ writing the result inplace to all ranks.
 """
 function Allreduce!(sendrecvbuf, op, comm::Communicator;
     stream::HIPStream=default_device_stream(comm))
-    Allreduce!(sendrecvbuf, sendrecvbuf, op, comm; stream)
+    Allreduce!(sendrecvbuf, sendrecvbuf, op, comm; stream.stream)
 end
 
 """
@@ -43,7 +43,7 @@ function Broadcast!(sendbuf, recvbuf, comm::Communicator; root::Integer=0,
     stream::HIPStream=default_device_stream(comm))
     data_type = ncclDataType_t(eltype(recvbuf))
     count = length(recvbuf)
-    ncclBroadcast(sendbuf, recvbuf, count, data_type, root, comm, stream)
+    ncclBroadcast(sendbuf, recvbuf, count, data_type, root, comm, stream.stream)
     return recvbuf
 end
 
@@ -57,7 +57,7 @@ Copies the `sendrecvbuf` array sitting on rank `root` inplace on all ranks.
 """
 function Broadcast!(sendrecvbuf, comm::Communicator; root::Integer=0,
     stream::HIPStream=default_device_stream(comm))
-    Broadcast!(sendrecvbuf, sendrecvbuf, comm; root, stream)
+    Broadcast!(sendrecvbuf, sendrecvbuf, comm; root, stream.stream)
 end
 
 """
@@ -74,7 +74,7 @@ function Reduce!(sendbuf, recvbuf, op, comm::Communicator; root::Integer=0,
     data_type = ncclDataType_t(eltype(recvbuf))
     count = length(recvbuf)
     _op = ncclRedOp_t(op)
-    ncclReduce(sendbuf, recvbuf, count, data_type, _op, root, comm, stream)
+    ncclReduce(sendbuf, recvbuf, count, data_type, _op, root, comm, stream.stream)
     return recvbuf
 end
 
@@ -89,7 +89,7 @@ Reduce the array `sendrecvbuf` in-place on rank `root` using `op`
 """
 function Reduce!(sendrecvbuf, op, comm::Communicator; root::Integer=0,
     stream::HIPStream=default_device_stream(comm))
-    Reduce!(sendrecvbuf, sendrecvbuf, op, comm; root, stream)
+    Reduce!(sendrecvbuf, sendrecvbuf, op, comm; root, stream.stream)
 end
 
 """
@@ -105,7 +105,7 @@ function Allgather!(sendbuf, recvbuf, comm::Communicator;
     data_type = ncclDataType_t(eltype(recvbuf))
     sendcount = length(sendbuf)
     @assert length(recvbuf) == sendcount * size(comm)
-    ncclAllGather(sendbuf, recvbuf, sendcount, data_type, comm, stream)
+    ncclAllGather(sendbuf, recvbuf, sendcount, data_type, comm, stream.stream)
     return recvbuf
 end
 
@@ -125,7 +125,7 @@ function ReduceScatter!(sendbuf, recvbuf, op, comm::Communicator;
     @assert length(sendbuf) == recvount * size(comm)
     data_type = ncclDataType_t(eltype(recvbuf))
     _op = ncclRedOp_t(op)
-    ncclReduceScatter(sendbuf, recvbuf, recvcount, data_type, _op, comm, stream)
+    ncclReduceScatter(sendbuf, recvbuf, recvcount, data_type, _op, comm, stream.stream)
     return recvbuf
 end
 

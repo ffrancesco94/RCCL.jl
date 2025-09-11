@@ -2,7 +2,7 @@
 library_name = "librccl"
 output_file_path = "../src/librccl.jl"
 module_name = "LibRCCL"
-export_symbol_prefixes = ["rccl"]
+export_symbol_prefixes = ["nccl"]
 prologue_file_path = "./prologue.jl"
 epilogue_file_path = "./epilogue.jl"
 

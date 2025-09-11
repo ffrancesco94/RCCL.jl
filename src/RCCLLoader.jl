@@ -64,9 +64,7 @@ function is_available()
 end
 
 
-"""
-    RCCL.version() :: VersionNumber
-
+""" RCCL.version() :: VersionNumber
 Get the version of the current RCCL library.
 """
 function version()
