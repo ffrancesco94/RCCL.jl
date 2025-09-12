@@ -1,7 +1,7 @@
 using Test
 
 using AMDGPU
-@info "AMDGPU info:\n" * sprint(io->AMDGPU.versioninfo(io))
+@info AMDGPU.versioninfo()
 
 using RCCL 
 @info "RCCL info: $(RCCL.version())"

@@ -1,7 +1,7 @@
 module RCCLLoader
 
 using Libdl
-export is_available, LIBRCCL_PATH, librccl
+export LIBRCCL_PATH, librccl
 
 # Ok, let's find out where ROCm is 
 const DEFAULT_ROCM_PATH = Ref{String}("/opt/rocm")
@@ -12,6 +12,7 @@ if haskey(ENV, "ROCM_PATH")
 end
 
 const LIB_NAME = "librccl.so"
+global const librccl::String = ""
 
 """
     librccl_path -> Union{String, nothing}
@@ -62,28 +63,9 @@ function is_available()
     end
 end
 
-
-""" RCCL.version() :: VersionNumber
-Get the version of the current RCCL library.
-"""
-function version()
-    ver_r = Ref{Cint}()
-    ncclGetVersion(ver_r)
-    ver = ver_r[]
-
-    if ver < 2900
-        major, ver = divrem(ver, 1000)
-        minor, patch = divrem(ver, 100)
-    else
-        major, ver = divrem(ver, 10000)
-        minor, patch = divrem(ver, 100)
-    end
-    VersionNumber(major, minor, patch)
-end
-
 function __init__()
     if is_available()
-        global const librccl = librccl_path()
+        global librccl = librccl_path()
     else
         @error "Cannot find librccl.so"
     end

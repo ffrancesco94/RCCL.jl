@@ -69,7 +69,7 @@ function Communicators(deviceids::AbstractVector{<:Integer})
     Communicators(Cint[d for d in deviceids])
 end
 function Communicators(devices)
-    Communicators(Cint[deviceid(d) for d in devices])
+    Communicators(Cint[device_id(d) for d in devices])
 end
 
 """
