@@ -18,8 +18,8 @@ using RCCL
     end
 
     # single communicator (with nranks=1 or this would block)
-    comm  = Communicator(1, 0)
-    @test RCCL.device(comm) == CuDevice(0)
+    comm  = Communicator(1, 1)
+    @test RCCL.device(comm) == HIPDevice(1)
 end
 
 @testset "Allreduce!" begin
@@ -27,12 +27,12 @@ end
     comms = RCCL.Communicators(devs)
 
     @testset "sum" begin
-        recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-        sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+        recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+        sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
         N = 512
         for (ii, dev) in enumerate(devs)
-            AMDGPU.device!(ii - 1)
-            sendbuf[ii] = CuArray(fill(Float64(ii), N))
+	    AMDGPU.device!(AMDGPU.devices()[ii - 1])
+            sendbuf[ii] = ROCArray(fill(Float64(ii), N))
             recvbuf[ii] = AMDGPU.zeros(Float64, N)
         end
         RCCL.group() do
@@ -42,19 +42,19 @@ end
         end
         answer = sum(1:length(devs))
         for (ii, dev) in enumerate(devs)
-            device!(ii - 1)
+	    device!(AMDGPU.devices()[ii - 1])
             crecv = collect(recvbuf[ii])
             @test all(crecv .== answer)
         end
     end
 
     @testset "RCCL.avg" begin
-        recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-        sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+        recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+        sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
         N = 512
         for (ii, dev) in enumerate(devs)
-            AMDGPU.device!(ii - 1)
-            sendbuf[ii] = CuArray(fill(Float64(ii), N))
+	    AMDGPU.device!(AMDGPU.devices()[ii - 1])
+            sendbuf[ii] = ROCArray(fill(Float64(ii), N))
             recvbuf[ii] = AMDGPU.zeros(Float64, N)
         end
         RCCL.group() do
@@ -64,7 +64,7 @@ end
         end
         answer = sum(1:length(devs)) / length(devs)
         for (ii, dev) in enumerate(devs)
-            device!(ii - 1)
+	    device!(AMDGPU.devices()[ii - 1])
             crecv = collect(recvbuf[ii])
             @test all(crecv .≈ answer)
         end
@@ -74,12 +74,12 @@ end
 @testset "Broadcast!" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
-    recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-    sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+    recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+    sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
     root  = 0
     for (ii, dev) in enumerate(devs)
-        AMDGPU.device!(ii - 1)
-        sendbuf[ii] = (ii - 1) == root ? CuArray(fill(Float64(1.0), 512)) : AMDGPU.zeros(Float64, 512)
+	AMDGPU.device!(AMDGPU.devices()[ii - 1])
+        sendbuf[ii] = (ii - 1) == root ? ROCArray(fill(Float64(1.0), 512)) : AMDGPU.zeros(Float64, 512)
         recvbuf[ii] = AMDGPU.zeros(Float64, 512)
     end
     RCCL.group() do
@@ -98,12 +98,12 @@ end
 @testset "Reduce!" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
-    recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-    sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+    recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+    sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
     root  = 0
     for (ii, dev) in enumerate(devs)
-        AMDGPU.device!(ii - 1)
-        sendbuf[ii] = CuArray(fill(Float64(ii), 512))
+	AMDGPU.device!(AMDGPU.devices()[ii - 1])
+        sendbuf[ii] = ROCArray(fill(Float64(ii), 512))
         recvbuf[ii] = AMDGPU.zeros(Float64, 512)
     end
     RCCL.group() do
@@ -122,11 +122,11 @@ end
 @testset "Allgather!" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
-    recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-    sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+    recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+    sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
     for (ii, dev) in enumerate(devs)
-        AMDGPU.device!(ii - 1)
-        sendbuf[ii] = CuArray(fill(Float64(ii), 512))
+	AMDGPU.device!(AMDGPU.devices()[ii - 1])
+        sendbuf[ii] = ROCArray(fill(Float64(ii), 512))
         recvbuf[ii] = AMDGPU.zeros(Float64, length(devs)*512)
     end
     RCCL.group() do
@@ -145,11 +145,11 @@ end
 @testset "ReduceScatter!" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
-    recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-    sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+    recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+    sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
     for (ii, dev) in enumerate(devs)
-        AMDGPU.device!(ii - 1)
-        sendbuf[ii] = CuArray(vec(repeat(collect(1:length(devs)), inner=2)))
+	AMDGPU.device!(AMDGPU.devices()[ii - 1])
+        sendbuf[ii] = ROCArray(vec(repeat(collect(1:length(devs)), inner=2)))
         recvbuf[ii] = AMDGPU.zeros(Float64, 2)
     end
     RCCL.group() do
@@ -168,12 +168,12 @@ end
 @testset "Send/Recv" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
-    recvbuf = Vector{CuVector{Float64}}(undef, length(devs))
-    sendbuf = Vector{CuVector{Float64}}(undef, length(devs))
+    recvbuf = Vector{ROCVector{Float64}}(undef, length(devs))
+    sendbuf = Vector{ROCVector{Float64}}(undef, length(devs))
     N = 512
     for (ii, dev) in enumerate(devs)
-        AMDGPU.device!(ii - 1)
-        sendbuf[ii] = CuArray(fill(Float64(ii), N))
+	AMDGPU.device!(AMDGPU.devices()[ii - 1])
+        sendbuf[ii] = ROCArray(fill(Float64(ii), N))
         recvbuf[ii] = AMDGPU.zeros(Float64, N)
     end
 
@@ -188,7 +188,7 @@ end
     end
     for (ii, dev) in enumerate(devs)
         answer = mod1(ii - 1, length(devs))
-        device!(ii - 1)
+	device!(AMDGPU.devices()[ii - 1])
         crecv = collect(recvbuf[ii])
         @test all(crecv .== answer)
     end

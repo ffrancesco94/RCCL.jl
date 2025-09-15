@@ -2,6 +2,8 @@ export Communicator
 
 const UniqueID = LibRCCL.ncclUniqueId
 
+using AMDGPU: device_id
+
 function UniqueID()
     r = Ref{UniqueID}()
     ncclGetUniqueId(r)
@@ -36,7 +38,7 @@ comm = Communicator(length(AMDGPU.devices()), id, myid()))
 """
 function Communicator(nranks::Integer, rank::Integer; unique_id::UniqueID=UniqueID())
     0 <= rank < nranks || throw(ArgumentError("Rank must be in [0, nranks)"))
-    handle_ref = REf{ncclComm_t}(C_NULL)
+    handle_ref = Ref{ncclComm_t}(C_NULL)
     ncclCommInitRank(handle_ref, nranks, unique_id, rank)
     c = Communicator(handle_ref[])
     return finalizer(destroy, c)
@@ -57,6 +59,7 @@ comms = RCCL.Communicators(CUDA.devices())
 ```
 """
 function Communicators(deviceids::Vector{Cint})
+    deviceids .-= 1
     ndev = length(deviceids)
     comms = Vector{ncclComm_t}(undef, ndev)
     ncclCommInitAll(comms, ndev, deviceids)
@@ -80,7 +83,7 @@ The device of the communicator.
 function device(comm::Communicator)
     dev_ref = Ref{Cint}(C_NULL)
     ncclCommCuDevice(comm, dev_ref)
-    return HIPDevice(dev_ref[])
+    return HIPDevice(dev_ref[]+1)
 end
 
 """

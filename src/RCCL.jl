@@ -4,7 +4,8 @@ using Libdl, AMDGPU, CEnum
 
 
 include("RCCLLoader.jl")
-using .RCCLLoader
+export librccl, is_available
+
 include("librccl.jl")
 using .LibRCCL
 
