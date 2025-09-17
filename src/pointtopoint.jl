@@ -10,7 +10,7 @@ must be present.
 """
 function Send(sendbuf, comm::Communicator; dest::Integer,
     stream::HIPStream=default_device_stream(comm))
-    count = length(sendbud)
+    count = length(sendbuf)
     datatype = ncclDataType_t(eltype(sendbuf))
     ncclSend(sendbuf, count, datatype, dest, comm, stream.stream)
     return nothing

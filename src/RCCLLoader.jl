@@ -1,7 +1,7 @@
 module RCCLLoader
 
 using Libdl
-export LIBRCCL_PATH, librccl
+export librccl
 
 # Ok, let's find out where ROCm is 
 const DEFAULT_ROCM_PATH = Ref{String}("/opt/rocm")
@@ -43,7 +43,6 @@ function librccl_path()
     # 3. Duck tape and prayers - Let the system figure it out 
     return LIB_NAME
 end
-const LIBRCCL_PATH = librccl_path()
 
 """
     is_available -> Bool 

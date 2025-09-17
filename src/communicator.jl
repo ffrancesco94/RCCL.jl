@@ -2,7 +2,8 @@ export Communicator
 
 const UniqueID = LibRCCL.ncclUniqueId
 
-using AMDGPU: device_id
+using AMDGPU: device!, stream
+using AMDGPU.HIP: device_id
 
 function UniqueID()
     r = Ref{UniqueID}()
@@ -55,11 +56,11 @@ on a single host.
 
 # Examples 
 ```
-comms = RCCL.Communicators(CUDA.devices())
+comms = RCCL.Communicators(AMDGPU.devices())
 ```
 """
 function Communicators(deviceids::Vector{Cint})
-    deviceids .-= 1
+    #deviceids .-= 1
     ndev = length(deviceids)
     comms = Vector{ncclComm_t}(undef, ndev)
     ncclCommInitAll(comms, ndev, deviceids)

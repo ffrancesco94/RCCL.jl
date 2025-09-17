@@ -122,7 +122,7 @@ result.
 function ReduceScatter!(sendbuf, recvbuf, op, comm::Communicator;
     stream::HIPStream=default_device_stream(comm))
     recvcount = length(recvbuf)
-    @assert length(sendbuf) == recvount * size(comm)
+    @assert length(sendbuf) == recvcount * size(comm)
     data_type = ncclDataType_t(eltype(recvbuf))
     _op = ncclRedOp_t(op)
     ncclReduceScatter(sendbuf, recvbuf, recvcount, data_type, _op, comm, stream.stream)
