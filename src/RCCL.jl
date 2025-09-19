@@ -1,6 +1,6 @@
 module RCCL
 
-using Libdl, AMDGPU, CEnum
+using Libdl, CEnum
 
 
 include("RCCLLoader.jl")

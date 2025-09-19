@@ -2,7 +2,7 @@ export Communicator
 
 const UniqueID = LibRCCL.ncclUniqueId
 
-using AMDGPU: device!, stream
+using AMDGPU: device!, stream, HIPDevice
 using AMDGPU.HIP: device_id
 
 function UniqueID()

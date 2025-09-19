@@ -308,129 +308,129 @@ end
 function ncclReduce(sendbuff, recvbuff, count, datatype, op, root, comm, stream)
      @check @ccall librccl.ncclReduce(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, op::ncclRedOp_t, root::Cint,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclReduce(sendbuff, recvbuff, count, datatype, op, root, comm, stream)
      @check @ccall librccl.pncclReduce(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, op::ncclRedOp_t, root::Cint,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclBcast(buff, count, datatype, root, comm, stream)
      @check @ccall librccl.ncclBcast(buff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        root::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        root::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclBcast(buff, count, datatype, root, comm, stream)
      @check @ccall librccl.pncclBcast(buff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        root::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        root::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclBroadcast(sendbuff, recvbuff, count, datatype, root, comm, stream)
      @check @ccall librccl.ncclBroadcast(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclBroadcast(sendbuff, recvbuff, count, datatype, root, comm, stream)
      @check @ccall librccl.pncclBroadcast(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclAllReduce(sendbuff, recvbuff, count, datatype, op, comm, stream)
      @check @ccall librccl.ncclAllReduce(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, op::ncclRedOp_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclAllReduce(sendbuff, recvbuff, count, datatype, op, comm, stream)
      @check @ccall librccl.pncclAllReduce(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, op::ncclRedOp_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclReduceScatter(sendbuff, recvbuff, recvcount, datatype, op, comm, stream)
      @check @ccall librccl.ncclReduceScatter(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid},
         recvcount::Cint, datatype::ncclDataType_t,
         op::ncclRedOp_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclReduceScatter(sendbuff, recvbuff, recvcount, datatype, op, comm, stream)
      @check @ccall librccl.pncclReduceScatter(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid},
         recvcount::Cint, datatype::ncclDataType_t,
         op::ncclRedOp_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclAllGather(sendbuff, recvbuff, sendcount, datatype, comm, stream)
      @check @ccall librccl.ncclAllGather(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid},
         sendcount::Cint, datatype::ncclDataType_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclAllGather(sendbuff, recvbuff, sendcount, datatype, comm, stream)
      @check @ccall librccl.pncclAllGather(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid},
         sendcount::Cint, datatype::ncclDataType_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclSend(sendbuff, count, datatype, peer, comm, stream)
      @check @ccall librccl.ncclSend(sendbuff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        peer::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        peer::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclSend(sendbuff, count, datatype, peer, comm, stream)
      @check @ccall librccl.pncclSend(sendbuff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        peer::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        peer::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclRecv(recvbuff, count, datatype, peer, comm, stream)
      @check @ccall librccl.ncclRecv(recvbuff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        peer::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        peer::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclRecv(recvbuff, count, datatype, peer, comm, stream)
      @check @ccall librccl.pncclRecv(recvbuff::Ptr{Cvoid}, count::Cint, datatype::ncclDataType_t,
-        peer::Cint, comm::ncclComm_t, stream::Cint)::ncclResult_t
+        peer::Cint, comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclGather(sendbuff, recvbuff, sendcount, datatype, root, comm, stream)
      @check @ccall librccl.ncclGather(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, sendcount::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclGather(sendbuff, recvbuff, sendcount, datatype, root, comm, stream)
      @check @ccall librccl.pncclGather(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, sendcount::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclScatter(sendbuff, recvbuff, recvcount, datatype, root, comm, stream)
      @check @ccall librccl.ncclScatter(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, recvcount::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclScatter(sendbuff, recvbuff, recvcount, datatype, root, comm, stream)
      @check @ccall librccl.pncclScatter(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, recvcount::Cint,
         datatype::ncclDataType_t, root::Cint, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclAllToAll(sendbuff, recvbuff, count, datatype, comm, stream)
      @check @ccall librccl.ncclAllToAll(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclAllToAll(sendbuff, recvbuff, count, datatype, comm, stream)
      @check @ccall librccl.pncclAllToAll(sendbuff::Ptr{Cvoid}, recvbuff::Ptr{Cvoid}, count::Cint,
         datatype::ncclDataType_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function ncclAllToAllv(sendbuff, sendcounts, sdispls, recvbuff, recvcounts, rdispls,
@@ -439,7 +439,7 @@ function ncclAllToAllv(sendbuff, sendcounts, sdispls, recvbuff, recvcounts, rdis
         sdispls::Ptr{Cint}, recvbuff::Ptr{Cvoid},
         recvcounts::Ptr{Cint}, rdispls::Ptr{Cint},
         datatype::ncclDataType_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pncclAllToAllv(sendbuff, sendcounts, sdispls, recvbuff, recvcounts, rdispls,
@@ -448,7 +448,7 @@ function pncclAllToAllv(sendbuff, sendcounts, sdispls, recvbuff, recvcounts, rdi
         sdispls::Ptr{Cint}, recvbuff::Ptr{Cvoid},
         recvcounts::Ptr{Cint}, rdispls::Ptr{Cint},
         datatype::ncclDataType_t, comm::ncclComm_t,
-        stream::Cint)::ncclResult_t
+        stream::Ptr{Cvoid})::ncclResult_t
 end
 
 const mscclAlgoHandle_t = Cint
@@ -472,7 +472,7 @@ function mscclRunAlgo(sendBuff, sendCounts, sDisPls, recvBuff, recvCounts, rDisP
         recvCounts::Ptr{Cint}, rDisPls::Ptr{Cint}, count::Cint,
         dataType::ncclDataType_t, root::Cint, peer::Cint,
         op::ncclRedOp_t, mscclAlgoHandle::mscclAlgoHandle_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function pmscclRunAlgo(sendBuff, sendCounts, sDisPls, recvBuff, recvCounts, rDisPls, count,
@@ -482,7 +482,7 @@ function pmscclRunAlgo(sendBuff, sendCounts, sDisPls, recvBuff, recvCounts, rDis
         recvCounts::Ptr{Cint}, rDisPls::Ptr{Cint}, count::Cint,
         dataType::ncclDataType_t, root::Cint, peer::Cint,
         op::ncclRedOp_t, mscclAlgoHandle::mscclAlgoHandle_t,
-        comm::ncclComm_t, stream::Cint)::ncclResult_t
+        comm::ncclComm_t, stream::Ptr{Cvoid})::ncclResult_t
 end
 
 function mscclUnloadAlgo(mscclAlgoHandle)

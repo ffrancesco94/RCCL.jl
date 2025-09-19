@@ -1,3 +1,4 @@
+using AMDGPU: HIPStream
 """
     RCCL.Send(
         sendbuf, comm::Communicator;

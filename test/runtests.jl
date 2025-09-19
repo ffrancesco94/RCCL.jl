@@ -1,6 +1,7 @@
 using Test
 
-using AMDGPU
+import AMDGPU
+using AMDGPU: ROCVector, ROCArray, zeros, device!, devices, versioninfo, HIPDevice
 using AMDGPU.HIP: device_id
 @info AMDGPU.versioninfo()
 
@@ -166,7 +167,7 @@ end
         @test all(crecv .== answer)
     end
 end
-#=
+
 @testset "Send/Recv" begin
     devs  = AMDGPU.devices()
     comms = RCCL.Communicators(devs)
@@ -183,7 +184,7 @@ end
         for ii in 1:length(devs)
             comm = comms[ii]
             dest = mod(RCCL.rank(comm)+1, RCCL.size(comm))
-            source = mod(RCCL.rank(comm)-1, RCCL.size(comm))
+            source = mod(RCCL.rank(comm), RCCL.size(comm))
             RCCL.Send(sendbuf[ii], comm; dest)
             RCCL.Recv!(recvbuf[ii], comm; source)
         end
@@ -195,5 +196,5 @@ end
         @test all(crecv .== answer)
     end
 end
-=#  
+  
 end
