@@ -179,22 +179,22 @@ end
         sendbuf[ii] = ROCArray(fill(Float64(ii), N))
         recvbuf[ii] = AMDGPU.zeros(Float64, N)
     end
-
     RCCL.group() do
-        for ii in 1:length(devs)
+        for (ii,dev) in enumerate(devs)
+	    AMDGPU.device!(dev)
             comm = comms[ii]
             dest = mod(RCCL.rank(comm)+1, RCCL.size(comm))
-            source = mod(RCCL.rank(comm), RCCL.size(comm))
+            source = mod(RCCL.rank(comm)-1, RCCL.size(comm))
             RCCL.Send(sendbuf[ii], comm; dest)
             RCCL.Recv!(recvbuf[ii], comm; source)
         end
     end
     for (ii, dev) in enumerate(devs)
-        answer = mod1(ii, length(devs))
+        answer = mod1(ii-1, length(devs))
 	AMDGPU.device!(dev)
         crecv = collect(recvbuf[ii])
         @test all(crecv .== answer)
     end
 end
-  
+ 
 end

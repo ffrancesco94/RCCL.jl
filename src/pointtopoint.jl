@@ -31,7 +31,6 @@ function Recv!(recvbuf, comm::Communicator; source::Integer,
     count = length(recvbuf)
     datatype = ncclDataType_t(eltype(recvbuf))
     ncclRecv(recvbuf, count, datatype, source, comm, stream.stream)
-    return recvbuf.data
 end
 
 
