@@ -22,6 +22,7 @@ makedocs(;
 DocumenterVitepress.deploydocs(;
     repo="github.com/ffrancesco94/RCCL.jl",
     branch="gh-pages",
+    target = joinpath(@__DIR__, "build"),
     devbranch="main",
     push_preview=true,
 )
