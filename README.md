@@ -1,24 +1,132 @@
-# RCCL
+# RCCL.jl
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://ffrancesco94.github.io/RCCL.jl/stable/)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://ffrancesco94.github.io/RCCL.jl/dev/)
 [![Build Status](https://github.com/ffrancesco94/RCCL.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/ffrancesco94/RCCL.jl/actions/workflows/CI.yml?query=branch%3Amain)
 [![Coverage](https://codecov.io/gh/ffrancesco94/RCCL.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/ffrancesco94/RCCL.jl)
 
-Wrapper of the RCCL (Radeon Collective Communication Library) for Julia.
-The bindings to the C functions were generated with [Clang.jl](https://github.com/JuliaInterop/Clang.jl). The API is very similar to that of [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl) and passes
-the same set of tests as that.
+**Julia bindings for the AMD Radeon Collective Communication Library (RCCL)**
 
-## General notes
+RCCL.jl provides Julia bindings for AMD's RCCL library, enabling high-performance multi-GPU communication on AMD GPU systems. The API is designed to be similar to [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl) and passes the same set of tests.
 
-A couple of implementation details differ between RCCL.jl and NCCL.jl
-due to discrepancies between the [AMDGPU.jl](https://github.com/JuliaGPU/AMDGPU.jl) and
-[CUDA.jl](https://github.com/JuliaGPU/CUDA.jl); specifically:
+## Features
 
-- `CUDA.jl` exports a `CUstream` type which is simply an alias of `cuStream_t` which
-  then gets wrapped in a `CuStream` struct. `CUstream` can be passed to all NCCL
-  C functions since it is basically a C type. `AMDGPU.jl` exposes a Julia struct
-  called `HIPStream` which contains a handle to a `hipStream_t` C type (which itself
-  is not exported). Thus, when `@ccall`ing RCCL functions, a simple `Ptr{Cvoid}`
-  is passed. This should change if somehow a `hipStream_t` is exposed by `AMDGPU.jl`;
-- `CUDA.jl` has a
+- **Multi-GPU Communication**: Efficient collective operations across multiple AMD GPUs
+- **Multi-Node Support**: Communication across multiple nodes in a cluster
+- **API Compatibility**: Similar API to NCCL.jl for easy migration
+- **Comprehensive Operations**: Allreduce, Broadcast, Reduce, Allgather, ReduceScatter, Send/Recv
+- **AMDGPU Integration**: Seamless integration with AMDGPU.jl
+
+## Installation
+
+```julia
+using Pkg
+Pkg.add("RCCL")
+```
+
+## Quick Example
+
+```julia
+using RCCL, AMDGPU
+
+# Initialize communicators for all available GPUs
+comms = RCCL.Communicators(AMDGPU.devices())
+
+# Perform an all-reduce operation
+sendbuf = AMDGPU.fill(1.0f0, 1024)
+recvbuf = AMDGPU.fill(0.0f0, 1024)
+RCCL.Allreduce!(sendbuf, recvbuf, +, comms[1])
+```
+
+## Documentation
+
+For complete documentation, see:
+- [Stable Documentation](https://ffrancesco94.github.io/RCCL.jl/stable/)
+- [Development Documentation](https://ffrancesco94.github.io/RCCL.jl/dev/)
+
+## API Overview
+
+### Communicators
+
+```julia
+# Create a single communicator
+comm = RCCL.Communicator(nranks, rank)
+
+# Create communicators for all devices
+comms = RCCL.Communicators(AMDGPU.devices())
+
+# Get communicator information
+RCCL.device(comm)      # Get the associated device
+RCCL.size(comm)       # Number of devices
+RCCL.rank(comm)       # Current rank (0-based)
+```
+
+### Collective Operations
+
+```julia
+# All-reduce (sum across all ranks)
+RCCL.Allreduce!(sendbuf, recvbuf, +, comm)
+
+# Broadcast (from root to all)
+RCCL.Broadcast!(sendbuf, recvbuf, comm; root=0)
+
+# Reduce (to root rank)
+RCCL.Reduce!(sendbuf, recvbuf, +, comm; root=0)
+
+# All-gather (gather from all to all)
+RCCL.Allgather!(sendbuf, recvbuf, comm)
+
+# Reduce-scatter (reduce and scatter)
+RCCL.ReduceScatter!(sendbuf, recvbuf, +, comm)
+```
+
+### Point-to-Point Operations
+
+```julia
+# Send to specific rank
+RCCL.Send(sendbuf, comm; dest=1)
+
+# Receive from specific rank
+RCCL.Recv!(recvbuf, comm; source=0)
+```
+
+### Reduction Operations
+
+- `+` : Sum
+- `*` : Product
+- `min` : Minimum
+- `max` : Maximum
+- `RCCL.avg` : Average
+
+## Implementation Notes
+
+RCCL.jl differs from NCCL.jl in a few implementation details due to differences between AMDGPU.jl and CUDA.jl:
+
+1. **Stream Handling**: AMDGPU.jl uses `HIPStream` objects which contain handles to `hipStream_t`, while CUDA.jl exports `CUstream` as an alias to `cuStream_t`. RCCL.jl passes `Ptr{Cvoid}` to RCCL functions.
+
+2. **Device Management**: The device handling follows AMDGPU.jl conventions where device IDs are 1-based.
+
+## Testing
+
+The package includes comprehensive tests that verify all collective operations work correctly. Tests are inspired by and compatible with NCCL.jl's test suite.
+
+## Requirements
+
+- Julia 1.6+
+- AMDGPU.jl
+- RCCL library installed on your system
+- AMD GPUs with ROCm support
+
+## Related Packages
+
+- [AMDGPU.jl](https://github.com/JuliaGPU/AMDGPU.jl) - AMD GPU programming in Julia
+- [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl) - NVIDIA's equivalent (inspiration for this package)
+- [MPI.jl](https://github.com/JuliaParallel/MPI.jl) - Message Passing Interface for Julia
+
+## Contributing
+
+Contributions are welcome! Please open issues or pull requests on the GitHub repository.
+
+## License
+
+RCCL.jl is licensed under the MIT License.
