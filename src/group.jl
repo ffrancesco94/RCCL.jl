@@ -16,7 +16,7 @@ groupEnd() = ncclGroupEnd()
 """
     RCCL.group(f)
 
-Evaluate `f()` between [`NCCL.groupStart()`](@ref) and [`NCCL.groupEnd()`](@ref).
+Evaluate `f()` between [`RCCL.groupStart()`](@ref) and [`RCCL.groupEnd()`](@ref).
 """
 function group(f)
     groupStart()

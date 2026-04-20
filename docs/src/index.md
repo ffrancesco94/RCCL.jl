@@ -64,6 +64,12 @@ RCCL.jl provides the following main components:
 Modules = [RCCL]
 ```
 
+## Internal discovery mechanism
+
+```@autodocs
+Modules = [RCCL.RCCLLoader]
+```
+
 ## Examples
 
 ### Basic All-Reduce

@@ -12,7 +12,7 @@ if haskey(ENV, "ROCM_PATH")
 end
 
 const LIB_NAME = "librccl.so"
-global const librccl::String = ""
+const librccl = Ref{String}("")
 
 """
     librccl_path -> Union{String, nothing}
@@ -64,7 +64,7 @@ end
 
 function __init__()
     if is_available()
-        global librccl = librccl_path()
+        librccl[] = librccl_path()
     else
         @error "Cannot find librccl.so"
     end

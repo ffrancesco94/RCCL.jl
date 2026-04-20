@@ -9,10 +9,9 @@ makedocs(;
     authors="Francesco Fiusco (ffiusco94@gmail.com)",
     sitename="RCCL.jl",
     format=DocumenterVitepress.MarkdownVitepress(;
-        canonical="https://ffrancesco94.github.io/RCCL.jl",
-        edit_link="main",
-        assets=String[],
-        prettyurls=get(ENV, "CI", "false") == "true",
+        repo="github.com/ffrancesco94/RCCL.jl",
+        devbranch="main",
+        devurl="dev"
     ),
     pages=[
         "Home" => "index.md",
