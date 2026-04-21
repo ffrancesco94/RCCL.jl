@@ -1,7 +1,3 @@
-```@meta
-CurrentModule = RCCL
-```
-
 # RCCL.jl Documentation
 
 RCCL.jl is a Julia wrapper for the AMD Radeon Collective Communication Library (RCCL), providing high-performance multi-GPU communication primitives optimized for AMD GPUs. This package is heavily inspired by and maintains API compatibility with [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl).
