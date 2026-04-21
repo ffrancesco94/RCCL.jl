@@ -6,6 +6,10 @@ RCCL.jl is a Julia wrapper for the AMD Radeon Collective Communication Library (
 
 To install RCCL.jl, use the Julia package manager:
 
+```@meta
+CurrentModule = RCCL
+```
+
 ```julia
 using Pkg
 Pkg.add("RCCL")
