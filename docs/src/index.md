@@ -18,15 +18,43 @@ Pkg.add("RCCL")
 ## Quick Start
 
 ```julia
-using RCCL, AMDGPU
 
-# Initialize communicators for all available GPUs
-comms = RCCL.Communicators(AMDGPU.devices())
+using AMDGPU
+using RCCL
 
-# Perform an all-reduce operation
-sendbuf = AMDGPU.fill(1.0f0, 1024)
-recvbuf = AMDGPU.fill(0.0f0, 1024)
-RCCL.Allreduce!(sendbuf, recvbuf, +, comms[1])
+# Discover available GPUs
+devs = AMDGPU.devices()
+
+# Create one RCCL communicator per GPU
+comms = RCCL.Communicators(devs)
+
+# One send/recv buffer pair per GPU
+N = 512
+sendbuf = Vector{ROCArray{Float64}}(undef, length(devs))
+recvbuf = Vector{ROCArray{Float64}}(undef, length(devs))
+
+# Initialize buffers
+for (i, dev) in enumerate(devs)
+    AMDGPU.device!(dev)
+    sendbuf[i] = ROCArray(fill(Float64(i), N))   # value = rank + 1
+    recvbuf[i] = AMDGPU.zeros(Float64, N)
+end
+
+# Perform the allreduce (sum)
+RCCL.group() do
+    for i in eachindex(devs)
+        RCCL.Allreduce!(sendbuf[i], recvbuf[i], +, comms[i])
+    end
+end
+
+# Copy results back and print
+expected = sum(1:length(devs))
+for (i, dev) in enumerate(devs)
+    AMDGPU.device!(dev)
+    result = collect(recvbuf[i])
+    @info "GPU $(i-1) result (expected = $expected)" result[1:8]
+end
+
 ```
 
 ## API Overview
