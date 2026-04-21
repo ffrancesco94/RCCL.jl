@@ -16,20 +16,6 @@ using Pkg
 Pkg.add("RCCL")
 ```
 
-## Quick Example
-
-```julia
-using RCCL, AMDGPU
-
-# Initialize communicators for all available GPUs
-comms = RCCL.Communicators(AMDGPU.devices())
-
-# Perform an all-reduce operation
-sendbuf = AMDGPU.fill(1.0f0, 1024)
-recvbuf = AMDGPU.fill(0.0f0, 1024)
-RCCL.Allreduce!(sendbuf, recvbuf, +, comms[1])
-```
-
 ## Documentation
 
 For complete documentation, see:
