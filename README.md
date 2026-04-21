@@ -7,15 +7,7 @@
 
 **Julia bindings for the AMD Radeon Collective Communication Library (RCCL)**
 
-RCCL.jl provides Julia bindings for AMD's RCCL library, enabling high-performance multi-GPU communication on AMD GPU systems. The API is designed to be similar to [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl) and passes the same set of tests.
-
-## Features
-
-- **Multi-GPU Communication**: Efficient collective operations across multiple AMD GPUs
-- **Multi-Node Support**: Communication across multiple nodes in a cluster
-- **API Compatibility**: Similar API to NCCL.jl for easy migration
-- **Comprehensive Operations**: Allreduce, Broadcast, Reduce, Allgather, ReduceScatter, Send/Recv
-- **AMDGPU Integration**: Seamless integration with AMDGPU.jl
+RCCL.jl provides Julia bindings for AMD's RCCL library, enabling high-performance multi-GPU communication on AMD GPU systems. The API is designed to be similar to [NCCL.jl](https://github.com/JuliaGPU/NCCL.jl) and passes the same set of tests. **Currently tested on a single node of MI250X, using ROCm 6.4. If anyone has access to a different HW/SW stack, feel free to try and report any hiccups!**
 
 ## Installation
 
@@ -44,59 +36,6 @@ For complete documentation, see:
 - [Stable Documentation](https://ffrancesco94.github.io/RCCL.jl/stable/)
 - [Development Documentation](https://ffrancesco94.github.io/RCCL.jl/dev/)
 
-## API Overview
-
-### Communicators
-
-```julia
-# Create a single communicator
-comm = RCCL.Communicator(nranks, rank)
-
-# Create communicators for all devices
-comms = RCCL.Communicators(AMDGPU.devices())
-
-# Get communicator information
-RCCL.device(comm)      # Get the associated device
-RCCL.size(comm)       # Number of devices
-RCCL.rank(comm)       # Current rank (0-based)
-```
-
-### Collective Operations
-
-```julia
-# All-reduce (sum across all ranks)
-RCCL.Allreduce!(sendbuf, recvbuf, +, comm)
-
-# Broadcast (from root to all)
-RCCL.Broadcast!(sendbuf, recvbuf, comm; root=0)
-
-# Reduce (to root rank)
-RCCL.Reduce!(sendbuf, recvbuf, +, comm; root=0)
-
-# All-gather (gather from all to all)
-RCCL.Allgather!(sendbuf, recvbuf, comm)
-
-# Reduce-scatter (reduce and scatter)
-RCCL.ReduceScatter!(sendbuf, recvbuf, +, comm)
-```
-
-### Point-to-Point Operations
-
-```julia
-# Send to specific rank
-RCCL.Send(sendbuf, comm; dest=1)
-
-# Receive from specific rank
-RCCL.Recv!(recvbuf, comm; source=0)
-```
-
-### Reduction Operations
-
-- `+` : Sum
-- `*` : Product
-- `min` : Minimum
-- `max` : Maximum
-- `RCCL.avg` : Average
 
 ## Implementation Notes
 
