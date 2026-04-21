@@ -33,7 +33,7 @@ RCCL.jl differs from NCCL.jl in a few implementation details due to differences 
 
 ## Testing
 
-The package includes comprehensive tests that verify all collective operations work correctly. Tests are inspired by and compatible with NCCL.jl's test suite.
+The package includes the same testing suite as NCCL.jl
 
 ## Requirements
 
