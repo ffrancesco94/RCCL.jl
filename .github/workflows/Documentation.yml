@@ -34,20 +34,7 @@ jobs:
           Pkg.develop(PackageSpec(path=pwd()))
           Pkg.instantiate()
       - name: Build and deploy 
-        run: julia --color=yes --project=docs docs/make.jl 
+      - run: julia --color=yes --project=docs --code-coverage=user docs/make.jl 
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN }}
           DOCUMENTER_KEY: ${{ secrets.DOCUMENTER_KEY }}
-  deploy:
-    if: github.event_name == 'push'
-    needs: build
-    runs-on: ubuntu-latest
-
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
